@@ -16,16 +16,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v4
+        uses: azure/setup-kubectl@v3
         with:
           version: "v1.29.0"
 
       - name: Validate kustomize render
         run: |
           kubectl kustomize . > /dev/null
-          echo "✅ Manifests rendered successfully"
+          echo "Manifests rendered successfully"
 
       - name: Dry-run apply (client-side, no cluster needed)
         run: |
           kubectl kustomize . | kubectl apply --dry-run=client -f - --validate=false
-          echo "✅ Dry-run apply passed"
+          echo "Dry-run apply passed"
