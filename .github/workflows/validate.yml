@@ -1,0 +1,31 @@
+name: Validate Kubernetes Manifests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Kustomize Dry-Run Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: "v1.29.0"
+
+      - name: Validate kustomize render
+        run: |
+          kubectl kustomize . > /dev/null
+          echo "✅ Manifests rendered successfully"
+
+      - name: Dry-run apply (client-side, no cluster needed)
+        run: |
+          kubectl kustomize . | kubectl apply --dry-run=client -f - --validate=false
+          echo "✅ Dry-run apply passed"
