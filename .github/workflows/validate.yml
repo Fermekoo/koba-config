@@ -22,10 +22,10 @@ jobs:
 
       - name: Validate kustomize render
         run: |
-          kubectl kustomize . > /dev/null
+          kubectl kustomize . > /tmp/rendered.yaml
           echo "Manifests rendered successfully"
 
       - name: Dry-run apply (client-side, no cluster needed)
         run: |
-          kubectl kustomize . | kubectl apply --dry-run=client -f - --validate=false
+          kubectl apply --dry-run=client --validate=false -f /tmp/rendered.yaml
           echo "Dry-run apply passed"
